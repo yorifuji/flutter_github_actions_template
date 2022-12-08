@@ -1,0 +1,14 @@
+name: tag on release branch merged
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+  workflow_dispatch:
+
+jobs:
+  tagged:
+    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'releases/')
+    uses: ./.github/workflows/tag.yaml
+    secrets: inherit

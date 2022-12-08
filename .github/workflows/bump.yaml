@@ -1,0 +1,66 @@
+name: bump
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        type: choice
+        description: Please Choice Bump Target
+        options:
+          - build
+          - patch
+          - minor
+          - major
+
+env:
+  GIT_USER_EMAIL: 'your_name@users.noreply.github.com'
+  GIT_USER_NAME: 'github-actions[bot]'
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: install flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: run flutter version
+        run: flutter --version
+
+      - name: run flutter pub get
+        run: flutter pub get
+
+      - name: init git config
+        run: |
+          git config --local user.name $GIT_USER_NAME
+          git config --local user.email $GIT_USER_EMAIL
+
+      - name: bump up version
+        run: |
+          echo choice: ${{ github.event.inputs.bump }}
+          flutter pub run cider bump ${{ github.event.inputs.bump }} --bump-build
+          echo "BUMP_VERSION=$(flutter pub run cider version)" >> $GITHUB_ENV
+
+      - name: commit and push pubspec.yaml
+        env:
+          BUMP_VERSION: ${{ env.BUMP_VERSION }}
+        run: |
+          git add -u pubspec.yaml
+          echo "Bumped version number to $BUMP_VERSION" | git commit --file=-
+          git push
+
+      - name: create tag and release note
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          BUMP_VERSION: ${{ env.BUMP_VERSION }}
+        run: |
+          gh release create v$BUMP_VERSION --generate-notes
