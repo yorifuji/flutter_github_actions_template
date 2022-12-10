@@ -26,6 +26,5 @@ jobs:
       - name: create tag and release note
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
-          BUMP_VERSION: ${{ env.BUMP_VERSION }}
         run: |
           gh release create v$BUMP_VERSION --generate-notes

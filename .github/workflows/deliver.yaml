@@ -34,12 +34,6 @@ jobs:
           echo "keyPassword=$ANDROID_KEY_PASSWORD" >> android/key.properties
           echo "keyAlias=$ANDROID_KEY_ALIAS" >> android/key.properties
 
-      - name: Create google service account file
-        env:
-          GOOGLE_SERVICE_ACCOUNT_KEY_JSON_BASE64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY_JSON_BASE64 }}
-        run: |
-          echo $GOOGLE_SERVICE_ACCOUNT_KEY_JSON_BASE64 | base64 --decode > android/service-account.json
-
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -63,6 +57,12 @@ jobs:
       - name: Get Package name
         run: |
           echo "PACKAGE_NAME=$(sed -nE 's/.*package="(.*)".*/\1/p' android/app/src/main/AndroidManifest.xml)" >> $GITHUB_ENV
+
+      - name: Create google service account file
+        env:
+          GOOGLE_SERVICE_ACCOUNT_KEY_JSON_BASE64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY_JSON_BASE64 }}
+        run: |
+          echo $GOOGLE_SERVICE_ACCOUNT_KEY_JSON_BASE64 | base64 --decode > android/service-account.json
 
       - name: Upload to Google Play
         id: upload

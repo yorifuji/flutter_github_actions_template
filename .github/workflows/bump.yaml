@@ -51,8 +51,6 @@ jobs:
           echo "BUMP_VERSION=$(flutter pub run cider version)" >> $GITHUB_ENV
 
       - name: commit and push pubspec.yaml
-        env:
-          BUMP_VERSION: ${{ env.BUMP_VERSION }}
         run: |
           git add -u pubspec.yaml
           echo "Bumped version number to $BUMP_VERSION" | git commit --file=-
@@ -61,6 +59,5 @@ jobs:
       - name: create tag and release note
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
-          BUMP_VERSION: ${{ env.BUMP_VERSION }}
         run: |
           gh release create v$BUMP_VERSION --generate-notes

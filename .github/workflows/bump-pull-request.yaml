@@ -52,29 +52,21 @@ jobs:
           echo "BUMP_VERSION=$(flutter pub run cider version)" >> $GITHUB_ENV
 
       - name: commit pubspec.yaml
-        env:
-          BUMP_VERSION: ${{ env.BUMP_VERSION }}
         run: |
           git add -u pubspec.yaml
           echo "Bumped version number to $BUMP_VERSION" | git commit --file=-
 
       - name: create releaser branch
-        env:
-          BUMP_VERSION: ${{ env.BUMP_VERSION }}
         run: |
           git checkout -b releases/$BUMP_VERSION
           echo "RELEASE_BRANCH=releases/$BUMP_VERSION" >> $GITHUB_ENV
 
       - name: push branch
-        env:
-          RELEASE_BRANCH: ${{ env.RELEASE_BRANCH }}
         run: |
           git push -u origin $RELEASE_BRANCH
 
       - name: create pull request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BUMP_VERSION: ${{ env.BUMP_VERSION }}
-          RELEASE_BRANCH: ${{ env.RELEASE_BRANCH }}
         run: |
           gh pr create -B main -t "Release $BUMP_VERSION" -b "Release $BUMP_VERSION" --head $RELEASE_BRANCH
