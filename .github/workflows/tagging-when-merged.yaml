@@ -1,4 +1,4 @@
-name: tag on release branch merged
+name: tagging when merged
 
 on:
   pull_request:
