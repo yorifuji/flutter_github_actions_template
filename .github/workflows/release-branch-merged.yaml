@@ -7,8 +7,25 @@ on:
     types: [closed]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   tagged:
     if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'releases/')
-    uses: ./.github/workflows/tag.yaml
-    secrets: inherit
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: get version from pubspec.yaml
+        run: |
+          echo "BUMP_VERSION=$(sed -n 's/^version: *\([^ ]*\) *$/\1/p' pubspec.yaml)" >> $GITHUB_ENV
+
+      - name: create tag and release note
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          BUMP_VERSION: ${{ env.BUMP_VERSION }}
+        run: |
+          gh release create v$BUMP_VERSION --generate-notes
