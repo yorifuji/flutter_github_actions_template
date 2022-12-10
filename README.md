@@ -35,10 +35,9 @@ Flutter の Android/iOS 開発用の GitHub Actions と関連ファイルのテ�
 - `.github`, `Dangerfile`, `Gemfile` をプロジェクトにコピーします
 - `.github/workflows` 内の `bump.yaml` と `bump-pull-request.yaml` を開いて次の値を変更します
 
-  | キー           | 内容                    |
-  | -------------- | ----------------------- |
-  | GIT_USER_NAME  | Git で使用する username |
-  | GIT_USER_EMAIL | Git で使用する email    |
+  | キー          | 内容                    |
+  | ------------- | ----------------------- |
+  | GIT_USER_NAME | Git で使用する username |
 
 ## GitHub Actions へ secret を登録
 
@@ -46,9 +45,9 @@ Flutter の Android/iOS 開発用の GitHub Actions と関連ファイルのテ�
 
 ### 共通
 
-| キー   | 内容                                                                       | 取得方法                                                                                                                                                          |
-| ------ | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| GH_PAT | ワークフローのトリガーに必要（[詳細](#patpersonal-access-token-について)） | [Creating a personal access token - GitHub Docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) |
+| キー   | 内容                                                                                          | 取得方法                                                                                                                                                          |
+| ------ | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GH_PAT | Personal Access Token、ワークフローの実行に必要（[詳細](#patpersonal-access-token-について)） | [Creating a personal access token - GitHub Docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) |
 
 ### Android 用
 
