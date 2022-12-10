@@ -125,4 +125,5 @@ dev_dependencies:
 - [Build and release an iOS app | Flutter](https://docs.flutter.dev/deployment/ios)
 - [アプリへの署名  |  Android デベロッパー  |  Android Developers](https://developer.android.com/studio/publish/app-signing)
 - [Configuration options for the dependabot.yml file - GitHub Docs](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file)
+  [Installing an Apple certificate on macOS runners for Xcode development - GitHub Docs](https://docs.github.com/en/actions/deployment/deploying-xcode-applications/installing-an-apple-certificate-on-macos-runners-for-xcode-development)
 - [Dart analyzer の出力を GitHub のファイル上に表示する](https://itome.team/blog/2022/06/dart-analyzer-problem-matcher/)
