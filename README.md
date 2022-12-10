@@ -35,9 +35,9 @@ Flutter の Android/iOS 開発用の GitHub Actions と関連ファイルのテ�
 - `.github`, `Dangerfile`, `Gemfile` をプロジェクトにコピーします
 - `.github/workflows` 内の `bump.yaml` と `bump-pull-request.yaml` を開いて次の値を変更します
 
-  | キー          | 内容                    |
-  | ------------- | ----------------------- |
-  | GIT_USER_NAME | Git で使用する username |
+  | キー           | 内容                 |
+  | -------------- | -------------------- |
+  | GIT_USER_EMAIL | Git で使用する email |
 
 ## GitHub Actions へ secret を登録
 
