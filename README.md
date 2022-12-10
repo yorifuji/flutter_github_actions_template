@@ -17,7 +17,7 @@ Flutter の Android/iOS 開発用の GitHub Actions と関連ファイルのテ�
   - アプリバージョンの更新を含む release ブランチと Pull Request を作成します
     - `releases/1.0.0+1` のようなブランチを作成します
   - チーム開発や [Protected branch](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/about-protected-branches) を使っている環境を想定したワークフローです
-- `release-branch-merged.yaml`
+- `tagging-when-merged.yaml`
   - 上述の release ブランチがマージされたタイミングで Tag を作成します
 - `deliver.yaml`
   - Tag の push イベントをトリガーに Android と iOS のリリービルドとストアへのアップロードを行います
