@@ -103,15 +103,17 @@ dev_dependencies:
 
 ## PAT(Personal Access Token) について
 
-- ワークフローからレポジトリに `Tag` を push する際に通常の `GITHUB_TOKEN` ではなく `PAT(Personal Access Token)` を使用しています
-- `deploy.yml` で `Tag` の push イベントをトリガーにワークフローを実行していますが、`GITHUB_TOKEN` を使用して作成した push イベントではワークフローが実行されない制約がありこれを回避するためです
+- ワークフローで `GITHUB_TOKEN` を使って発生したイベントから新しいワークフローは実行されません
+  - 例えば push イベントで実行するワークフローがあったとします、そのワークフローの中からレポジトリに commit を push したとします、すると push イベントが発生するのでまたワークフローが実行されます、という無限ループが発生するからです
   - [Triggering a workflow - GitHub Enterprise Cloud Docs](https://docs.github.com/en/enterprise-cloud@latest/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow)
-- PAT の使い方を誤ると予期しない動作が起きることがあるので注意が必要です、そのため PAT が使えない、もしくは利用したくない場合は `workflow run` を使うように改変することで同等のことは実現が可能かと思います
+- `deploy.yml` は `bump.yml` や `tagging-when-merged.yml` が push した tag のイベントをトリガーに実行されますが、tag の push に `GITHUB_TOKEN` を使用するとワークフローが実行されないため、これを回避するために PAT を使っています
+- PAT の使い方を誤ると予期しない動作が起きることがあるので注意が必要です
+  - PAT が使えない、もしくは利用したくない場合は `workflow run` を使うように改変することで同等のことは実現が可能かと思います
   - [Github Actions の workflow run について](https://zenn.dev/keitacoins/articles/2a715be45e874f)
 
 ## GitHub Actions のセキュリティについて
 
-- セキュリティガイド
+- GitHub Actions のセキュリティガイド
   - [Security guides - GitHub Docs](https://docs.github.com/en/actions/security-guides)
 - ワークフローの `permissions` については必要最低限のものを使用するように定義しているつもりですが、過不足があれば教えてもらえると助かります
   - [Workflow syntax for GitHub Actions - GitHub Docs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions)
