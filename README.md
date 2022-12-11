@@ -69,7 +69,7 @@ Flutter の Android/iOS 開発用の GitHub Actions と関連ファイルのテ�
 | IOS_CERTIFICATE_P12_PASSWORD    | 証明書のパスワード                                                                   |                                                                                                                               |
 | IOS_PROVISIONING_PROFILE_BASE64 | 配布用プロビジョニングプロファイル（Base64）                                         |                                                                                                                               |
 
-### ファイルを base64 に変換する手順
+### ファイルを base64 に変換して secrets に登録する手順
 
 - [Encrypted secrets - GitHub Docs](https://docs.github.com/ja/actions/security-guides/encrypted-secrets#storing-base64-binary-blobs-as-secrets)
 
@@ -101,15 +101,7 @@ dev_dependencies:
 
 # 注意事項
 
-## PAT(Personal Access Token) について
-
-- ワークフローで `GITHUB_TOKEN` を使って発生したイベントから新しいワークフローは実行されません
-  - 例えば push イベントで実行するワークフローがあったとします、そのワークフローの中からレポジトリに commit を push したとします、すると push イベントが発生するのでまたワークフローが実行されます、という無限ループが発生するからです
-  - [Triggering a workflow - GitHub Enterprise Cloud Docs](https://docs.github.com/en/enterprise-cloud@latest/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow)
-- `deploy.yml` は `bump.yml` や `tagging-when-merged.yml` が push した tag のイベントをトリガーに実行されますが、tag の push に `GITHUB_TOKEN` を使用するとワークフローが実行されないため、これを回避するために PAT を使っています
-- PAT の使い方を誤ると予期しない動作が起きることがあるので注意が必要です
-  - PAT が使えない、もしくは利用したくない場合は `workflow run` を使うように改変することで同等のことは実現が可能かと思います
-  - [Github Actions の workflow run について](https://zenn.dev/keitacoins/articles/2a715be45e874f)
+セキュリティ関連での補足です
 
 ## GitHub Actions のセキュリティについて
 
@@ -117,6 +109,20 @@ dev_dependencies:
   - [Security guides - GitHub Docs](https://docs.github.com/en/actions/security-guides)
 - ワークフローの `permissions` については必要最低限のものを使用するように定義しているつもりですが、過不足があれば教えてもらえると助かります
   - [Workflow syntax for GitHub Actions - GitHub Docs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions)
+
+## Personal Access Token(PAT) について
+
+- ワークフローで `GITHUB_TOKEN` を使って発生したイベントから新しいワークフローは実行されません
+  - 例えば push イベントで実行するワークフローがあったとします、そのワークフローの中からレポジトリに commit を push したとします、すると push イベントが発生するのでまたワークフローが実行されます、という無限ループが発生するからです
+  - [Triggering a workflow - GitHub Enterprise Cloud Docs](https://docs.github.com/en/enterprise-cloud@latest/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow)
+- `deploy.yml` は `bump.yml` や `tagging-when-merged.yml` が push した tag のイベントをトリガーに実行されますが、tag の push に `GITHUB_TOKEN` を使用するとワークフローが実行されないため、これを回避するために `PAT` を使っています
+- PAT の使い方を誤ると予期しない動作が起きることがあるので注意が必要です
+  - PAT が使えない、もしくは利用したくない場合は `workflow run` を使うように改変することで同等のことは実現が可能かと思います
+  - [Github Actions の workflow run について](https://zenn.dev/keitacoins/articles/2a715be45e874f)
+- なお PAT を作成する際は最近新しく追加された **fine-grained personal access token** がお勧めです、アクセス対象のレポジトリ、権限を細かく制御できます
+  - [Creating a personal access token - GitHub Docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-fine-grained-personal-access-token)
+  - ここで紹介しているワークフローで使用する際は Permissions で Contents に write 権限を与えてください
+- 従来形式(legacy)のアクセストークンを利用する場合は repository に対する write 権限があれば動作すると思います（動作未確認です）
 
 # その他
 
@@ -127,6 +133,23 @@ dev_dependencies:
 - [Build and release an Android app | Flutter](https://docs.flutter.dev/deployment/android)
 - [Build and release an iOS app | Flutter](https://docs.flutter.dev/deployment/ios)
 - [アプリへの署名  |  Android デベロッパー  |  Android Developers](https://developer.android.com/studio/publish/app-signing)
-- [Configuration options for the dependabot.yml file - GitHub Docs](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file)
-  [Installing an Apple certificate on macOS runners for Xcode development - GitHub Docs](https://docs.github.com/en/actions/deployment/deploying-xcode-applications/installing-an-apple-certificate-on-macos-runners-for-xcode-development)
 - [Dart analyzer の出力を GitHub のファイル上に表示する](https://itome.team/blog/2022/06/dart-analyzer-problem-matcher/)
+- [Danger action](https://github.com/marketplace/actions/danger-action)
+
+## GitHub
+
+- [Automatically generated release notes](https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes)
+- [Protected branch](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/about-protected-branches)
+- [Installing an Apple certificate on macOS runners for Xcode development - GitHub Docs](https://docs.github.com/en/actions/deployment/deploying-xcode-applications/installing-an-apple-certificate-on-macos-runners-for-xcode-development)
+- base64 [Encrypted secrets - GitHub Docs](https://docs.github.com/ja/actions/security-guides/encrypted-secrets#storing-base64-binary-blobs-as-secrets)
+- persmissions [Workflow syntax for GitHub Actions - GitHub Docs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions)
+- [Triggering a workflow - GitHub Enterprise Cloud Docs](https://docs.github.com/en/enterprise-cloud@latest/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow)
+- [Security guides - GitHub Docs](https://docs.github.com/en/actions/security-guides)
+- access token [Creating a personal access token - GitHub Docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token#creating-a-fine-grained-personal-access-token)
+- [Problem Matchers](https://github.com/actions/toolkit/blob/main/docs/problem-matchers.md)
+- [Configuration options for the dependabot.yml file - GitHub Docs](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file)
+- [dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file)
+
+# 免責
+
+LICENSE は MIT です、自己責任でご利用ください
