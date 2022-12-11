@@ -4,36 +4,36 @@ Flutter の Android/iOS 開発用の GitHub Actions と関連ファイルのテ�
 
 # 主な機能
 
-- `check.yaml`
+- `check.yml`
   - push のタイミングで flutter analyze と test を実行します
   - [Problem Matchers](https://github.com/actions/toolkit/blob/main/docs/problem-matchers.md)、[Danger action](https://github.com/marketplace/actions/danger-action) を使って、analyze が出力する `(info|warning|error)` を GitHub の `File chaged` に表示します
-- `bump.yaml`
+- `bump.yml`
   - GitHub の画面上からアプリのバージョン（`pubspec.yaml` の `version:`）をインクリメント（更新）するワークフローです
   - 更新対象の `major.minor.patch(build number)` を選択することが可能です
   - バージョンの更新と合わせて Tag, Release（releaset note）を作成します
     - [Automatically generated release notes](https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes)
   - 更新内容は自動的に push されます
-- `bump-pull-request.yaml`
+- `bump-pull-request.yml`
   - アプリバージョンの更新を含む release ブランチと Pull Request を作成します
     - `releases/1.0.0+1` のようなブランチを作成します
   - チーム開発や [Protected branch](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/about-protected-branches) を使っている環境を想定したワークフローです
-- `tagging-when-merged.yaml`
+- `tagging-when-merged.yml`
   - 上述の release ブランチがマージされたタイミングで Tag を作成します
-- `deliver.yaml`
+- `deliver.yml`
   - Tag の push イベントをトリガーに Android と iOS のリリービルドとストアへのアップロードを行います
-  - つまり `bump.yaml` の実行もしくは `bump-pull-request.yaml` で作成したリリースブランチがマージされると deliver.yaml が実行されます
+  - つまり `bump.yml` の実行もしくは `bump-pull-request.yml` で作成したリリースブランチがマージされると deliver.yml が実行されます
 
 その他の機能
 
-- dependabot.yaml
-  - pubspec.yaml に含まれるパッケージと GitHub Actions に含まれる action の更新をチェックして PR を作成するための [dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file) の定義です
+- dependabot.yml
+  - pubspec.yml に含まれるパッケージと GitHub Actions に含まれる action の更新をチェックして PR を作成するための [dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file) の定義です
 
 # セットアップ手順
 
 ## ファイル
 
 - `.github`, `Dangerfile`, `Gemfile` をプロジェクトにコピーします
-- `.github/workflows` 内の `bump.yaml` と `bump-pull-request.yaml` を開いて次の値を変更します
+- `.github/workflows` 内の `bump.yml` と `bump-pull-request.yml` を開いて次の値を変更します
 
   | キー           | 内容                 |
   | -------------- | -------------------- |
@@ -45,9 +45,9 @@ Flutter の Android/iOS 開発用の GitHub Actions と関連ファイルのテ�
 
 ### 共通
 
-| キー   | 内容                                                                                          | 取得方法                                                                                                                                                          |
-| ------ | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| GH_PAT | Personal Access Token、ワークフローの実行に必要（[詳細](#patpersonal-access-token-について)） | [Creating a personal access token - GitHub Docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) |
+| キー   | 内容                                                                                                                                                    | 取得方法                                                                                                                                                          |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GH_PAT | Personal Access Token、ワークフローで発生したイベントをトリガーにして別のワークフローを実行するために必要（[詳細](#patpersonal-access-token-について)） | [Creating a personal access token - GitHub Docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) |
 
 ### Android 用
 
@@ -104,16 +104,17 @@ dev_dependencies:
 ## PAT(Personal Access Token) について
 
 - ワークフローからレポジトリに `Tag` を push する際に通常の `GITHUB_TOKEN` ではなく `PAT(Personal Access Token)` を使用しています
-- `deploy.yaml` で `Tag` の push イベントをトリガーにワークフローを実行していますが、`GITHUB_TOKEN` を使用して作成した push イベントではワークフローが実行されない制約がありこれを回避するためです
+- `deploy.yml` で `Tag` の push イベントをトリガーにワークフローを実行していますが、`GITHUB_TOKEN` を使用して作成した push イベントではワークフローが実行されない制約がありこれを回避するためです
   - [Triggering a workflow - GitHub Enterprise Cloud Docs](https://docs.github.com/en/enterprise-cloud@latest/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow)
 - PAT の使い方を誤ると予期しない動作が起きることがあるので注意が必要です、そのため PAT が使えない、もしくは利用したくない場合は `workflow run` を使うように改変することで同等のことは実現が可能かと思います
   - [Github Actions の workflow run について](https://zenn.dev/keitacoins/articles/2a715be45e874f)
 
 ## GitHub Actions のセキュリティについて
 
+- セキュリティガイド
+  - [Security guides - GitHub Docs](https://docs.github.com/en/actions/security-guides)
 - ワークフローの `permissions` については必要最低限のものを使用するように定義しているつもりですが、過不足があれば教えてもらえると助かります
   - [Workflow syntax for GitHub Actions - GitHub Docs](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions)
-- [Security guides - GitHub Docs](https://docs.github.com/en/actions/security-guides)
 
 # その他
 
