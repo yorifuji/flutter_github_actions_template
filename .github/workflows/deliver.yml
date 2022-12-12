@@ -23,8 +23,7 @@ jobs:
           PREPROCESS_SCRIPT_BASE64: ${{ secrets.PREPROCESS_SCRIPT_BASE64 }}
         run: |
           if [ -n "$PREPROCESS_SCRIPT_BASE64" ]; then
-            echo $PREPROCESS_SCRIPT_BASE64 | base64 --decode > ./pre-process.sh
-            bash ./pre-process.sh
+            echo $PREPROCESS_SCRIPT_BASE64 | base64 --decode > ./pre-process.sh && bash ./pre-process.sh
           fi
 
       - name: Create keystore file
@@ -98,8 +97,7 @@ jobs:
           PREPROCESS_SCRIPT_BASE64: ${{ secrets.PREPROCESS_SCRIPT_BASE64 }}
         run: |
           if [ -n "$PREPROCESS_SCRIPT_BASE64" ]; then
-            echo $PREPROCESS_SCRIPT_BASE64 | base64 --decode > ./pre-process.sh
-            bash ./pre-process.sh
+            echo $PREPROCESS_SCRIPT_BASE64 | base64 --decode > ./pre-process.sh && bash ./pre-process.sh
           fi
 
       - name: Import Provisioning Profile
