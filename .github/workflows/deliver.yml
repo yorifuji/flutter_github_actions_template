@@ -3,7 +3,7 @@ name: deliver
 on:
   push:
     tags:
-      - v**
+      - v*
   workflow_dispatch:
 
 permissions:
@@ -16,6 +16,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Run pre-process script
+        shell: bash
+        env:
+          PREPROCESS_SCRIPT_BASE64: ${{ secrets.PREPROCESS_SCRIPT_BASE64 }}
+        run: |
+          if [ -n "$PREPROCESS_SCRIPT_BASE64" ]; then
+            echo $PREPROCESS_SCRIPT_BASE64 | base64 --decode > ./pre-process.sh && bash ./pre-process.sh
+          fi
 
       - name: Create keystore file
         env:
@@ -81,6 +90,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Run pre-process script
+        shell: bash
+        env:
+          PREPROCESS_SCRIPT_BASE64: ${{ secrets.PREPROCESS_SCRIPT_BASE64 }}
+        run: |
+          if [ -n "$PREPROCESS_SCRIPT_BASE64" ]; then
+            echo $PREPROCESS_SCRIPT_BASE64 | base64 --decode > ./pre-process.sh && bash ./pre-process.sh
+          fi
 
       - name: Import Provisioning Profile
         env:

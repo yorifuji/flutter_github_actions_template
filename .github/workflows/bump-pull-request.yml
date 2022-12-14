@@ -1,4 +1,4 @@
-name: bump
+name: bump pull request
 
 on:
   workflow_dispatch:
@@ -13,11 +13,12 @@ on:
           - major
 
 env:
-  GIT_USER_EMAIL: 'your_name@users.noreply.github.com'
+  GIT_USER_EMAIL: '41898282+github-actions[bot]@users.noreply.github.com'
   GIT_USER_NAME: 'github-actions[bot]'
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   bump:
@@ -50,14 +51,22 @@ jobs:
           flutter pub run cider bump ${{ github.event.inputs.bump }} --bump-build
           echo "BUMP_VERSION=$(flutter pub run cider version)" >> $GITHUB_ENV
 
-      - name: commit and push pubspec.yaml
+      - name: commit pubspec.yaml
         run: |
           git add -u pubspec.yaml
           echo "Bumped version number to $BUMP_VERSION" | git commit --file=-
-          git push
 
-      - name: create tag and release note
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
+      - name: create releaser branch
         run: |
-          gh release create v$BUMP_VERSION --generate-notes
+          git checkout -b releases/$BUMP_VERSION
+          echo "RELEASE_BRANCH=releases/$BUMP_VERSION" >> $GITHUB_ENV
+
+      - name: push branch
+        run: |
+          git push -u origin $RELEASE_BRANCH
+
+      - name: create pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create -B main -t "Release $BUMP_VERSION" -b "Release $BUMP_VERSION" --head $RELEASE_BRANCH
