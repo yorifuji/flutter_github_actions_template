@@ -33,23 +33,18 @@ Flutter の Android/iOS 開発用の GitHub Actions と関連ファイルのテ�
 ## ファイル
 
 - `.github`, `Dangerfile`, `Gemfile` をプロジェクトにコピーします
-- `.github/workflows` 内の `bump.yml` と `bump-pull-request.yml` を開いて次の値を変更します
-
-  | キー           | 内容                 |
-  | -------------- | -------------------- |
-  | GIT_USER_EMAIL | Git で使用する email |
 
 ## GitHub Actions へ secret を登録
 
 - 以下の情報をプロジェクトの secret に登録します
 
-### 共通
+## 共通
 
 | キー   | 内容                                                                                                                                                    | 取得方法                                                                                                                                                          |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | GH_PAT | Personal Access Token、ワークフローで発生したイベントをトリガーにして別のワークフローを実行するために必要（[詳細](#patpersonal-access-token-について)） | [Creating a personal access token - GitHub Docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) |
 
-### Android 用
+## Android 用
 
 | キー                                   | 内容                                                                                          | 取得方法                                                                                |
 | -------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
@@ -59,34 +54,43 @@ Flutter の Android/iOS 開発用の GitHub Actions と関連ファイルのテ�
 | ANDROID_KEY_PASSWORD                   | key password                                                                                  |                                                                                         |
 | GOOGLE_SERVICE_ACCOUNT_KEY_JSON_BASE64 | Google(GCP) サービスアカウント、ビルドしたバイナリを Google Play にアップロードするために必要 | 参考 https://zenn.dev/altiveinc/articles/how-to-google-service-account                  |
 
-### iOS 用
+## iOS 用
 
-| キー                            | 内容                                                                                 | 取得方法                                                                                                                      |
-| ------------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| APPLE_APP_PASS                  | `altool` を使ってビルドしたバイナリを App Store Connect にアップロードするために必要 | [App 用パスワードを使って Apple ID で App にサインインする - Apple サポート (日本)](https://support.apple.com/ja-jp/HT204397) |
-| APPLE_APPLE_ID                  | App 用パスワードの AppleID                                                           |                                                                                                                               |
-| IOS_CERTIFICATE_P12_BASE64      | 配布用証明書（Base64）                                                               | 参考 https://zenn.dev/pressedkonbu/articles/254ca2fc3cd1ab                                                                    |
-| IOS_CERTIFICATE_P12_PASSWORD    | 証明書のパスワード                                                                   |                                                                                                                               |
-| IOS_PROVISIONING_PROFILE_BASE64 | 配布用プロビジョニングプロファイル（Base64）                                         |                                                                                                                               |
+| キー                            | 内容                                                                                 | 取得方法                                                       |
+| ------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| APPLE_APP_PASS                  | `altool` を使ってビルドしたバイナリを App Store Connect にアップロードするために必要 | https://support.apple.com/ja-jp/HT204397                       |
+| APPLE_APPLE_ID                  | App 用パスワードの AppleID                                                           |                                                                |
+| IOS_CERTIFICATE_P12_BASE64      | Apple Distribution （配布用証明書、Base64）                                          | https://developer.apple.com/account/resources/certificates/add |
+| IOS_CERTIFICATE_P12_PASSWORD    | Apple Distribution （配布用証明書） パスワード                                       |                                                                |
+| IOS_PROVISIONING_PROFILE_BASE64 | 配布用プロビジョニングプロファイル（Base64）                                         | https://developer.apple.com/account/resources/profiles/add     |
 
-### ファイルを base64 に変換して secrets に登録する手順
+## ファイルを base64 に変換して secrets に登録する手順
 
 - [Encrypted secrets - GitHub Docs](https://docs.github.com/ja/actions/security-guides/encrypted-secrets#storing-base64-binary-blobs-as-secrets)
 
-## ExportOptions.plist の作成（iOS）
+## Automatic manage signing 　をオフにする
 
-- iOS アプリの App Store 向けのビルドで `ExportOptions.plist` が必要なので以下の手順で取得する
-  - Xcode から Product > Archive > Export を選択
-  - 初回は App Store Connect に登録するアプリ名を入力
-    - App Store Connect にアプリが登録される
-  - Manual managing signing を選択する
-    - あらかじめ作成しておいた配布用プロビジョニングプロファイルを選択する
-  - Export を実行
-    - 出力先のフォルダに入っている `ExportOptions.plist` をプロジェクトの `ios/` に追加する
-- 参考
-  - https://qiita.com/uhooi/items/a17a5d0e5dd5a76191ac
-- 補足
-  - Xcode のプロジェクト設定で **Automatic manage signing** をオフ、配布用プロビジョニングプロファイルを選択しておく必要があります
+- ios/Runner.xcworkspace を Xcode で開く
+- TARGETS から Runner を選んで Signing & Capabilities を開く
+- Release の **Automatic manage signing** をオフにする
+- Provisioning Profile に作成済みの配布用プロビジョニングプロファイルを選択する
+
+## ExportOptions.plist の作成
+
+App Store 向けのビルドで `ExportOptions.plist` が必要なので以下の手順で取得する
+
+- ios/Runner.xcworkspace を Xcode で開く
+- Product > Archive > Export を選択
+- 初回は App Store Connect に登録するアプリ名を入力
+  - App Store Connect にアプリが登録される
+- Manual managing signing を選択する
+  - あらかじめ作成しておいた配布用プロビジョニングプロファイルを選択する
+- Export を実行
+  - 出力先のフォルダに入っている `ExportOptions.plist` をプロジェクトの `ios/` に追加する
+
+参考
+
+- https://qiita.com/uhooi/items/a17a5d0e5dd5a76191ac
 
 ## pubspec.yaml
 
